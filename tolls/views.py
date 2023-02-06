@@ -7,6 +7,7 @@ from maps.models import Node, Edge
 from maps.views import CreateGraph
 from violations.models import TollViolation,TrafficViolation
 from .models import TollStation, Toll
+from .serializers import TollStationSerializer
 
 
 class CreateTollStation(APIView):
@@ -30,11 +31,12 @@ class CreateTollStation(APIView):
             preedge.delete()
             CreateGraph.add_node_to_graph(leftedge.from_node,leftedge.to_node,leftedge.longitude)
             CreateGraph.add_node_to_graph(rightedge.from_node,rightedge.to_node,rightedge.longitude)
-            return Response(status=status.HTTP_201_CREATED)
+            res=TollStationSerializer(tlst)
+            return Response(res.data,status=status.HTTP_201_CREATED)
         return Response({"detail":"distance is wrong"},status=status.HTTP_400_BAD_REQUEST)
 
 class EditCarLocation_CreateToll(APIView):
-    def post(self,request,carid):
+    def put(self,request,carid):
         car = Car.objects.get(id=carid)
         locedge = request.data["loc_edge"]
         locdis = request.data["loc_nextnode_distance"]

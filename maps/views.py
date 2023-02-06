@@ -38,11 +38,10 @@ class CreateGraph(APIView):
             serializer.validated_data["to_node"]=tonode
             serializer.save()
             CreateGraph.add_node_to_graph(fromnode,tonode,request.data["longitude"])
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def get(self,request):
-        print(CreateGraph.graph.adjacency_list)
         return Response(CreateGraph.graph.adjacency_list ,status=status.HTTP_200_OK)
 
 
