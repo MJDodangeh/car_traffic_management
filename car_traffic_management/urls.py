@@ -16,15 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from tolls.views import CreateTollStation, EditCarLocation_CreateToll, PayToll
-from violations.views import TollViolatorList , TrafficViolationList
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("maps.urls")),
     path('', include("cars.urls")),
     path('', include("tolls.urls")),
-    path('violators/', TollViolatorList.as_view()),
-    path('traffic/', TrafficViolationList.as_view())
+    path('', include("violations.urls")),
+
 ]

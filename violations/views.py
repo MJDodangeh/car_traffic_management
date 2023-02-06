@@ -10,15 +10,21 @@ class TollViolatorList(APIView):
         tvls = TollViolation.objects.all()
         res = {"violators":[]}
         count = {}
+        total_amount = {}
         for tv in tvls:
-            i = {"name":tv.car.owner.name,"nationalcode":tv.car.owner.national_code}
+            ncode=tv.toll.car.owner.national_code
+            i = {"name":tv.toll.car.owner.name,"nationalcode":ncode}
             if i not in res["violators"]:
                 res["violators"].append(i)
-                count[tv.car.owner.national_code] = 1
+                count[ncode] = 1
+                total_amount[ncode] = tv.toll.amount
             else:
-                count[tv.car.owner.national_code] += 1
+                count[ncode] += 1
+                count[ncode] += tv.toll.amount
         for r in res["violators"]:
             r["count"] = count[r["nationalcode"]]
+            r["total_amount"] = total_amount[r["nationalcode"]]
+        res["violators"] = sorted(res["violators"],key=lambda x:x["total_amount"],reverse=True)
         return Response(res, status=status.HTTP_202_ACCEPTED)
 
 class TrafficViolationList(APIView):

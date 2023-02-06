@@ -34,8 +34,8 @@ class CreateTollStation(APIView):
         return Response({"detail":"distance is wrong"},status=status.HTTP_400_BAD_REQUEST)
 
 class EditCarLocation_CreateToll(APIView):
-    def post(self,request,pk):
-        car = Car.objects.get(id=pk)
+    def post(self,request,carid):
+        car = Car.objects.get(id=carid)
         locedge = request.data["loc_edge"]
         locdis = request.data["loc_nextnode_distance"]
         car.loc_edge_id = locedge
@@ -85,7 +85,7 @@ class PayToll(APIView):
             t.save()
             return Response({"detail":"the toll was paid"},status=status.HTTP_202_ACCEPTED)
         else:
-            TollViolation.objects.create(car=t.car)
+            TollViolation.objects.create(toll=t)
             return Response({"detail":"A toll violation occurred",
                              "car":t.car.id,"amount":t.amount},status=status.HTTP_200_OK)
 
